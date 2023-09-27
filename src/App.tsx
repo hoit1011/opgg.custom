@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./index.css"; 
-// import backgroundImage from "assets/back.jpg";
+import backgroundImage from '../src/assets/back.jpeg';
+import user from '../src/assets/user-solid.svg';
+import medal from '../src/assets/medal-solid.svg';
+import win from '../src/assets/win.svg';;
+import lose from '../src/assets/lose.svg';
+
 
 function App() {
   const [summonerName, setSummonerName] = useState("");
   const [data, setData] = useState<any>(null);
   const [wins, setWins] = useState(0)
   const [loss, setLoss] = useState(0)
+  const [percent, setPercent] = useState(0)
+  
   // const [matchHistory, setMatchHistory] = useState<any[]>([]);
 
   const onClick = async () => {
@@ -20,29 +27,36 @@ function App() {
       `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${response.data.id}?api_key=RGAPI-c8038f3c-dc29-40e2-b435-5ff36c50e178`
     ).then((resp) => {
       setWins(resp.data[1].wins),setLoss(resp.data[1].losses)
+
+      setPercent(resp.data[1].wins / (resp.data[1].wins + resp.data[1].losses) * 100)
+      console.log(resp.data[1].wins / (resp.data[1].wins + resp.data[1].losses) * 100)
     })
   };
   
   return (
-      <div style={{backgroundImage: `url("https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.leagueoflegends.com%2Fko-kr%2Fnews%2Friot-games%2Fanniversary-mural-gifts%2F&psig=AOvVaw1hRMC9Ux8JGW_mE0VfHp3K&ust=1695876584903000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCKDwnd3-yYEDFQAAAAAdAAAAABAE)`}}>
+      <div style={{backgroundImage: `url(${backgroundImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      height: '100vh',
+      }}>
+        <img src="../src/assets/LOL.webp" id="lolLogo"/>
         <div id="box">
           <div id="checker">
-            <div id="item1">
-              <input
-                type="text"
-                id="search"
-                value={summonerName}
-                onChange={(e) => setSummonerName(e.target.value)}
-                />
-            </div>
             <div id="item2">
-              <p>닉네임: {data?.name}</p>
+              <img className = "icon" src={user}/>
+              <p>{data?.name}</p>
             </div>
             <div id="item3">
-              <p>승리수 : {wins}</p>
+              <img className = "icon" src={win}/>
+              <p>{wins}</p>
             </div>
             <div id="item4">
-              <p>패배수 : {loss}</p>
+            <img className = "icon" src={lose}/>
+              <p>{loss}</p>
+            </div>
+            <div id="item5">
+              <img className = "icon" src={medal}/>
+              <p>{percent.toFixed(2)}</p>
             </div>
           </div>
           <div id="record">
@@ -56,12 +70,20 @@ function App() {
             {/* )} */}
           </div>
           <div id ="buttonframe">
+          <div id="item1">
+              <input
+                type="text"
+                id="search"
+                value={summonerName}
+                onChange={(e) => setSummonerName(e.target.value)}
+                />
+            </div>
             <div id="check">
               <button onClick={onClick} id="customButton">확인</button>
             </div>
             </div>
           </div>
-    </div>
+         </div>
   );
 }
 
